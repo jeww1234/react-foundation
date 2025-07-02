@@ -41,7 +41,7 @@ function App() {
   }
 
   const getweatherByCity = async() =>{
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_key}&appid=${API_key}&units=metric`
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_key}&units=metric`
     setLoading(true)
     let response = await fetch(url)
     let data = await response.json()
