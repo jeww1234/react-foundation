@@ -1,57 +1,74 @@
+import { useEffect, useState } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { useState } from 'react';
-import Box from './component/Box';
+import WeatherBox from './component/WeatherBox';
+import WeatherBtn from './component/WeatherBtn';
+import { Container } from 'react-bootstrap';
+import { ClipLoader } from "react-spinners";
 
 
-const choice = {
-  rock:{name : "Rock", img: "https://media.istockphoto.com/id/157502829/ko/%EC%82%AC%EC%A7%84/%EC%84%B1%EA%B3%B5%EC%A0%81%EC%9D%B4%EA%B1%B0%EB%82%98-%EA%B0%95%EB%A0%A5%ED%95%9C-%EC%82%AC%EC%97%85%EA%B0%80-%EC%A5%A0-%EA%B1%B0%EB%8C%80%ED%95%9C-%EB%B0%94%EC%9C%84%EC%82%B0-%EB%B3%BC%EB%8D%94-into-the-sky.jpg?s=1024x1024&w=is&k=20&c=edPda2giWvEU3xmmMc8gBEW6EO1hTZRLuj-6CtNzH4s="},
-  scissors:{name : "Scissors", img: "https://i.namu.wiki/i/PGp3JnsDa9eaMKBC1OwnSU4M0vLE0d_40ehrl0aUYum98U6tg0Nnl8W6_c0bQk2Bp9mQCMTe7eQt32pszxoQGw.webp"},
-  paper:{name : "Paper", img: "https://t3.ftcdn.net/jpg/03/10/00/04/360_F_310000429_Y8AwjQ4r2OSCjU0AzwT3CUmL908xmvjA.jpg"},
-}
 
+// 0b455b67f7ff2cd45dcccd33831a3728
+//앱 실행시 현재 위치기반 날씨 보여줌
+//날씨 정보(도시, 섭씨, 화씨)
+// 5개의 버튼(현재, 도시4개)
+// 도시 버튼을 클릭 -> 도시별 날씨 UI
+// 현재 위치 버튼 클릭 -> 현재 위치 기반 날씨 UI
+// 데이터 들고오는 동안 로딩 스피너
 function App() {
-  const [userSelect, setUserSelect] = useState(null)
-  const [computerSelect, setComputerSelect] = useState(null)
-  const [result, setResult] = useState("준비")
-  const [result2, setResult2] = useState("준비")
-  const play = (userChoice) =>{
-    setUserSelect(choice[userChoice])
-    let computerChoice = randomChoice()
-    setComputerSelect(computerChoice)
-    const result = judgement(choice[userChoice], computerChoice)
-    setResult(result)
-    setResult2(result === "Win" ? "Lose" : result === "Lose" ? "Win" : "Tie")     
-  }
-  const judgement = (user,  computer) =>{
-    if (user.name === computer.name){
-      return "Tie"
-    }
-    else if (user.name === "Rock") return computer.name === "Scissors"? "Win":"Lose"
-    else if (user.name === "Scissors") return computer.name === "Paper"? "Win":"Lose"
-    else if (user.name === "Paper") return computer.name === "Rock"? "Win":"Lose"
-  }
-  const randomChoice = () =>{
-    let itemArray = Object.keys(choice)
-    console.log(itemArray)
-    let randomitem = Math.floor(Math.random() * itemArray.length)
-    let final = itemArray[randomitem]
-    return choice[final]
-  }
-  return (
-    <div>
-    <div className='container'>
-      <Box title="You" item={userSelect} result= {result} box={result === "Win" || result === "Lose" || result === "Tie" ? result : "default"}/>
-      <Box title="Coumputer" item = {computerSelect} result= {result2} box={result2 === "Win" || result2 === "Lose" || result2 === "Tie" ? result2 : "default"}/>
-    </div>
-    <div className='container'>
-      <button onClick={() => play("scissors")}>가위</button>
-      <button onClick={() => play("rock")}>바위</button>
-      <button onClick={() => play("paper")}>보</button>
-      {/* onClick에 매개변수가 포함된 함수 하나만 넣으면 곧 바로 실행 */}
-      {/* 따라서 ()=>play("paper")와 같이 콜백 함수로 넣어줘야 한다. */}
-    </div>
-    </div>
-  );
-}
+  const API_key = '0b455b67f7ff2cd45dcccd33831a3728'
+  const cities = ['Paris', 'New York', 'Tokyo', 'Seoul']
+  const [city, setCity] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [weather, setWeather] = useState(null)
 
+  const getCurrentLocation = () =>{
+    navigator.geolocation.getCurrentPosition((position)=>{
+      let lat =  position.coords.latitude
+      let lon = position.coords.longitude
+      console.log(lat, lon)
+      getweatherByCurrentLocation(lat, lon)
+    })
+  }
+
+  const getweatherByCurrentLocation = async(lat, lon) =>{
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_key}&units=metric`
+    setLoading(true)
+    let response = await fetch(url)
+    let data = await response.json()
+    setWeather(data)
+    setLoading(false)
+  }
+
+  const getweatherByCity = async() =>{
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_key}&appid=${API_key}&units=metric`
+    setLoading(true)
+    let response = await fetch(url)
+    let data = await response.json()
+    setWeather(data)
+    setLoading(false)
+  }
+
+  useEffect(()=>{
+    if(!city){
+      getCurrentLocation()
+    }else{
+      getweatherByCity()
+    }
+  },[city])
+
+  return(
+  <div>
+    {loading?(<Container className='container'>    <ClipLoader className='loading-spinner'
+        color = "#f88c6b"
+        loading={loading}
+        size={150}
+      /></Container>):
+      <Container className='container'>    
+        <WeatherBox weather = {weather}/>
+        <WeatherBtn cities={cities} setCity={setCity} getCurrentLocation={getCurrentLocation}/>
+      </Container>}    
+  </div>
+) 
+}
 export default App;
