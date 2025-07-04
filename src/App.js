@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import ProductAll from './page/ProductAll';
 import Login from './page/Login';
 import ProductDetail from './page/ProductDetail';
+import Navbar from './component/Navbar';
 
 
 
@@ -19,9 +20,10 @@ import ProductDetail from './page/ProductDetail';
 
 
 function App() {
-  const img_url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu33MvMQxzeLQWuQTeJbGoEUq_bsuAH1HMag&s"
+  
   return(
   <div>
+    <Navbar />
     <Routes >
       <Route path='/product' element= {<ProductAll />}/>
       <Route path='/login' element= {<Login />}/>
