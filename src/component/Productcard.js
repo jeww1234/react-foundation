@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Product_card = () => {
+const Productcard = () => {
   return (
     <div>
       <img src='https://noona-hnm.netlify.app/pattern-jacket.jpeg' alt='#'/>
@@ -12,4 +12,4 @@ const Product_card = () => {
   )
 }
 
-export default Product_card
+export default Productcard
