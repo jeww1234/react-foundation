@@ -3,8 +3,9 @@ import './App.css';
 import { Route, Routes } from 'react-router-dom';
 import ProductAll from './page/ProductAll';
 import Login from './page/Login';
-import ProductDetail from './page/ProductDetail';
 import Navbar from './component/Navbar';
+import { useState } from 'react';
+import PrivateRoutes from './Routes/PrivateRoutes';
 
 
 
@@ -20,14 +21,14 @@ import Navbar from './component/Navbar';
 
 
 function App() {
-  
+  const [authenticate, setAuthenticate] = useState(false)
   return(
   <div>
-    <Navbar />
+    <Navbar authenticate={authenticate} setAuthenticate={setAuthenticate}/>
     <Routes >
-      <Route path='/product' element= {<ProductAll />}/>
-      <Route path='/login' element= {<Login />}/>
-      <Route path='/product/:id' element= {<ProductDetail />}/>
+      <Route path='/' element= {<ProductAll />}/>
+      <Route path='/login' element= {<Login setAuthenticate={setAuthenticate}/>}/>
+      <Route path='/product/:id' element= {<PrivateRoutes authenticate={authenticate}/>}/>
     </Routes >
   </div>
 ) 

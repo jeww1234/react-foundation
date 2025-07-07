@@ -2,8 +2,9 @@ import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faSearch } from "@fortawesome/free-solid-svg-icons"
+import { useNavigate } from "react-router-dom";
 
-const Navbar = () => {
+const Navbar = ({ authenticate, setAuthenticate}) => {
   const menu_list = [
     "여성",
     "남성",
@@ -15,15 +16,31 @@ const Navbar = () => {
     "지속 가능성",
   ];
 
+  const navigate = useNavigate()
+
+  const goToLogin = () =>{
+    if(authenticate === true){setAuthenticate(false)}
+    navigate("/login")
+  }
+
+  const search= (event)=>{
+    if(event.key === "Enter"){
+      let keyword = event.target.value
+      navigate(`/?q=${keyword}`)
+    }
+  }
+  const gotoHome = () =>{
+    navigate('/')
+  }
   return (
     <div>
-      <div className="login-button">
+      <div className="login-button" onClick={goToLogin}>
         <FontAwesomeIcon icon={faUser} />
-        <div>로그인</div>
+        {authenticate === true?<div>로그아웃</div>:<div>로그인</div>}
       </div>
 
       <div className="nav-section">
-        <img
+        <img onClick={gotoHome}
           src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu33MvMQxzeLQWuQTeJbGoEUq_bsuAH1HMag&s"
           alt="#"
         />
@@ -38,7 +55,7 @@ const Navbar = () => {
 
         <div className="search-area">
             <FontAwesomeIcon icon={faSearch} />
-            <input type="text"/>
+            <input type="text" onKeyPress={(event)=>search(event)}/>
         </div>
       </div>
     </div>

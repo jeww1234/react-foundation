@@ -1,6 +1,8 @@
 .login-button{
     display: flex;
     justify-content: flex-end;
+    cursor: pointer;
+    padding: 15px;
 }
 
 .nav-section{
@@ -31,4 +33,27 @@
 }
 .search-area input{
     margin: 10px;
+}
+.product-cards{
+    padding: 10px;
+}
+.product-cards:hover{
+    scale: 110%;
+}
+.product-cards img{
+    width: 100%;
+}
+.product-cards div{
+    padding: 1px 10px 0 10px;
+}
+
+.product-img{
+    display: flex;
+    justify-content: flex-end;
+}
+.product-img img{
+    width: 60%;
+}
+.product-box{
+    padding: 40px;
 }
